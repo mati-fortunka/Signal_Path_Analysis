@@ -12,7 +12,7 @@ import statistics as s
 
 if __name__ == "__main__":
     if len(sys.argv)!=3:
-        sys.exit("Wrong number of arguments given. Correct syntax: contacts.py path_to_folder res_list")
+        sys.exit("Wrong number of arguments given. Correct syntax: paths.py path_to_folder res_list")
     else:
         path = sys.argv[1]
         residue_list = sys.argv[2]
