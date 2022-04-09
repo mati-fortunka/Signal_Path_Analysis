@@ -10,10 +10,11 @@ import numpy as np
 import statistics as s
 
 if __name__ == "__main__":
-    if len(sys.argv)!=2:
-        sys.exit("Wrong number of arguments given. Correct syntax: in_sum.py path_to_file")
+    if len(sys.argv)!=3:
+        sys.exit("Wrong number of arguments given. Correct syntax: in_sum.py path_to_file no_of_repetitions")
     else:
         file = sys.argv[1]
+        reps = int(sys.argv[2]) + 1
 
 def ch_res(rs1, rs2):
     if rs1 == rs2:
@@ -37,9 +38,9 @@ infile.close()
 outfile = open(out, "w")
 outfile.write("Name of path\t Opt. id. [%]\t st. dev. [%]\t No. of paths\t st. dev.\t length [aa]\t st. dev.\t length [dist]\t st. dev.\t A_FL\t st. dev.\t B_F\t st. dev.\t A_E\t st. dev.\t B_ED\t st. dev.\n")
 
-for i in range(len(lines)//6):
-    name = lines[i*6].rstrip("\n")
-    check(name[0:6], 'Start:', i*6+1)
+for i in range(len(lines)//reps):
+    name = lines[i*reps].rstrip("\n")
+    check(name[0:6], 'Start:', i*reps+1)
     path={}
     optimal=[]
     number=[]
@@ -50,9 +51,9 @@ for i in range(len(lines)//6):
     A_E=[]
     B_ED=[]
     similarity=[]
-    for x in range(1,6):
-        path[f"{x}"]=[lines[i*6+x].split('\t')]
-        check(lines[i*6+x][0], f'{x-1}', i*6+x)
+    for x in range(1,reps):
+        path[f"{x}"]=[lines[i*reps+x].split('\t')]
+        check(lines[i*reps+x][0], f'{x-1}', i*reps+x)
         opt = path[f"{x}"][0][1].split(',')
         optimal.append(opt[1:len(opt)-1])
         number.append(int(path[f"{x}"][0][2]))
@@ -62,9 +63,9 @@ for i in range(len(lines)//6):
         B_F.append(int(path[f"{x}"][0][-6]))
         A_E.append(int(path[f"{x}"][0][-4]))
         B_ED.append(int(path[f"{x}"][0][-2]))
-    for y in range(5):
+    for y in range(reps-1):
         temp=[]
-        for z in range(5):
+        for z in range(reps-1):
             if z!=y:
                 wynik=100*len(set(optimal[y]).intersection(optimal[z]))/len(set(optimal[y]))
                 temp.append(wynik)
@@ -85,7 +86,7 @@ for i in range(len(lines)//6):
     A_E_sd = round(s.stdev(A_E), 2)
     B_ED_avg = round(np.average(B_ED), 2)
     B_ED_sd = round(s.stdev(B_ED), 2)    
-    outfile.write(f"{name}\t{sim_avg}\t{sim_sd}\t{num_avg}\t{num_sd}\t{aa_avg}\t{aa_sd}\t{dist_avg}\t{dist_sd}\t{A_FL_avg}\t{A_FL_sd}\t{B_F_avg}\t{B_F_sd}\t{A_E_avg}\t{A_E_sd}\t{B_ED_avg}\t{B_ED_sd}\n")
+    outfile.write(f"{name}\t{sim_avg}\t{sim_sd}\t{num_avg}\t{num_sd}\t{aa_avg}\t{aa_sd}\t{d_avg}\t{d_sd}\t{A_FL_avg}\t{A_FL_sd}\t{B_F_avg}\t{B_F_sd}\t{A_E_avg}\t{A_E_sd}\t{B_ED_avg}\t{B_ED_sd}\n")
     
 outfile.write('\n')
 outfile.close()

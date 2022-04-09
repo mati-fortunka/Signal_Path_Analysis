@@ -11,7 +11,7 @@ import glob
 
 if __name__ == "__main__":
     if len(sys.argv)!=2:
-        sys.exit("Wrong number of arguments given. Correct syntax: psummary2.py path_to_folder")
+        sys.exit("Wrong number of arguments given. Correct syntax: paths_summary.py path_to_folder")
     else:
         folder = sys.argv[1]
 
@@ -55,7 +55,7 @@ for idx, val in enumerate(summaries["0"][0]):
         start=val.rstrip("\n")
         end=summaries["0"][0][idx+1]
         outf.write(f"{start} - {end}")
-        calcnwrite(summaries["0"][0], 0, idx)
+        #calcnwrite(summaries["0"][0], 0, idx)
         for k in summaries.keys():
             for li, lv in enumerate(summaries[k][0]):
                 if lv==val and summaries[k][0][li+1]==summaries["0"][0][idx+1]:

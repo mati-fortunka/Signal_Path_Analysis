@@ -10,11 +10,12 @@ import numpy as np
 import statistics as s
 
 if __name__ == "__main__":
-    if len(sys.argv)!=3:
-        sys.exit("Wrong number of arguments given. Correct syntax: in_mirror.py file nat/sd")
+    if len(sys.argv)!=4:
+        sys.exit("Wrong number of arguments given. Correct syntax: in_mirror.py file nat/sd no_of_repetitions")
     else:
         file1 = sys.argv[1]
         variant = sys.argv[2]
+        reps = int(sys.argv[3]) + 1
 
 infile = open(file1, "r")
 lines1 = infile.readlines()
@@ -31,7 +32,7 @@ if variant == "sd":
         lines1[j]=lines1[j].replace("End: B_ASP_265", "End: B_GLU_264")
 
 def mirror(nm):
-    nm=nm.replace("A_","C_").replace("B_","A_").replace("C_","B_")
+    nm=nm.replace("A_","X_").replace("C_","A_").replace("X_","C_")
     return(nm)
 
 def ch_res(rs1, rs2):
@@ -60,9 +61,9 @@ def compare_paths(names, id_1, id_2):
     B_F=[]
     A_E=[]
     B_ED=[]
-    for x in range(1,6):
-        path1[f"{x}"]=[lines1[id_1*6+x].split('\t')]
-        check(lines1[id_1*6+x][0], f'{x-1}', id_1*6+x)
+    for x in range(1, reps):
+        path1[f"{x}"]=[lines1[id_1*reps+x].split('\t')]
+        check(lines1[id_1*reps+x][0], f'{x-1}', id_1*reps+x)
         opt1 = path1[f"{x}"][0][1].split(',')
         optimal1.append(opt1[1:len(opt1)-1])
 
@@ -81,10 +82,10 @@ def compare_paths(names, id_1, id_2):
         B_ED.append(int(path1[f"{x}"][0][-2])-int(path2[f"{x}"][0][-2]))
     similarity1=[]
     similarity2=[]   
-    for y in range(5):
+    for y in range(reps-1):
         temp1=[]
         temp2=[]
-        for z in range(5):
+        for z in range(reps-1):
             wynik1=100*len(set(optimal1[y]).intersection(optimal2[z]))/len(set(optimal1[y]))
             temp1.append(wynik1)
             wynik2=100*len(set(optimal2[z]).intersection(optimal1[y]))/len(set(optimal2[z]))
@@ -117,9 +118,9 @@ def compare_paths(names, id_1, id_2):
 outfile.write("Name of paths\t Opt. id. [%]\t st. dev. [%]\t Opt. id. rev. [%]\t st. dev. [%]\t diff in no. of paths\t st. dev.\t diff. in length [aa]\t st. dev.\t diff. in length [nm]\t st. dev.\t diff. A_FL\t st. dev.\t diff. B_F\t st. dev.\t diff. A_E\t st. dev.\t diff. B_ED\t st. dev.\n")
 
 paths_list=[]
-for i in range(len(lines1)//6):
-    name = lines1[i*6].rstrip("\n")
-    check(name.split()[0], 'Start:', i*6+1)
+for i in range(len(lines1)//reps):
+    name = lines1[i*reps].rstrip("\n")
+    check(name.split()[0], 'Start:', i*reps+1)
     paths_list.append([name, i])
 
 while len(paths_list) > 1:
@@ -133,13 +134,13 @@ while len(paths_list) > 1:
         paths_name = f"{path[0]} vs {mirror_path}"
         idx = lines1.index(mirror_path+'\n')
         compare_paths(paths_name, path[1], idx)
-        paths_list.remove([mirror_path , idx/6])
+        paths_list.remove([mirror_path , idx/reps])
 
     elif rmirror_path in np.array(paths_list)[:,0]:
         paths_name = f"{path[0]} vs {rmirror_path}"
         idx = lines1.index(rmirror_path+'\n')
         compare_paths(paths_name, path[1], idx)
-        paths_list.remove([rmirror_path , idx/6])
+        paths_list.remove([rmirror_path , idx/reps])
 
     else:
         print(f"For path: {path[0]} program did not find mirror path.")
