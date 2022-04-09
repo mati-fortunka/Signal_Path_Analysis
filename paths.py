@@ -29,11 +29,11 @@ def add_res(nm):
     name = ch_res(nm)
     if name == "A_PHE_185" or name == "A_LEU_185":
         mut["A_FL"]+=1
-    elif name == "B_PHE_185":
+    elif name == "C_PHE_185" or name == "B_PHE_185":
         mut["B_F"]+=1
     elif name == "A_GLU_264":
         mut["A_E"]+=1
-    elif name == "B_GLU_264" or name == "B_ASP_265":
+    elif name == "C_GLU_264" or name == "C_ASP_265" or name == "B_GLU_264" or name == "B_ASP_265":
         mut["B_ED"]+=1
 
 
@@ -53,7 +53,8 @@ for file in files:
     line2=infile.readline()
     start = ch_res(int(line1[-5:-2]))
     end = ch_res(int(line2[-5:-2]))
-    outfile.write(f"Start: {start}\nEnd: {end}\n")  
+    outfile.write(f"Start: {start}\nEnd: {end}\n")
+    mut = { "A_FL": 0, "B_F": 0, "A_E": 0, "B_ED": 0}
     aa_len=[]
     length=[]
     no_of_paths=1
@@ -81,7 +82,7 @@ for file in files:
                 length.append(int(resi.pop().replace(')', '').replace('(', '')))
             except ValueError:
                 pass
-            if "148" in resi or "485" in resi or "227" in resi or "564" in resi:
+            if "148" in resi or "667" in resi or "227" in resi or "588" in resi:
                 for x in resi:
                     add_res(int(x))    
     if i[0:6]!="Number":
